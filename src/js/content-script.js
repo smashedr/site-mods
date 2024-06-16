@@ -66,6 +66,18 @@ function mutationObserver(mutationList) {
                 // cloned.addEventListener('click', linkClick)
                 // cloned.dataset.png = el.dataset.png
                 // download.parentNode.replaceChild(cloned, download)
+
+                el.querySelectorAll('img').forEach((img) => {
+                    // console.debug('img:', img)
+                    // console.debug('img.src:', img.src)
+                    // console.debug('img.dataset.src:', img.dataset.src)
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src
+                    }
+                    // loadImage(img).catch((e) =>
+                    //     console.warn('Image failed to load:', e)
+                    // )
+                })
             }
             if (el.id === 'download') {
                 console.log('DOWNLOAD:', el)
@@ -77,7 +89,6 @@ function mutationObserver(mutationList) {
                 document
                     .getElementById('fi-premium-download-buttons')
                     .classList.remove('modal-download--target')
-
                 const link = el.querySelector('a')
                 link.dataset.png = detail.dataset.png
                 link.dataset.name = detail.dataset.name
@@ -105,3 +116,19 @@ async function downloadItem(event) {
         }
     }
 }
+
+// function loadImage(img) {
+//     return new Promise((resolve, reject) => {
+//         // const src = img.getAttribute('data-src') || img.src
+//         const src = img.dataset.src
+//         console.log('src:', src)
+//         if (src) {
+//             const temp = new Image()
+//             temp.onload = () => resolve()
+//             temp.onerror = () => reject()
+//             temp.src = src
+//         } else {
+//             resolve()
+//         }
+//     })
+// }
