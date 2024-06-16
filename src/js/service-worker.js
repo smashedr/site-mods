@@ -32,7 +32,7 @@ async function onStartup() {
  */
 async function onInstalled(details) {
     console.log('onInstalled:', details)
-    const githubURL = 'https://github.com/smashedr/site-mods'
+    const githubURL = 'https://github.com/smashedr/site-tools'
     // const uninstallURL = new URL('https://link-extractor.cssnr.com/uninstall/')
     const options = await Promise.resolve(
         setDefaultOptions({

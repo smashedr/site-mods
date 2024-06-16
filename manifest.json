@@ -16,8 +16,8 @@
   "host_permissions": ["*://*/*"],
   "content_scripts": [
     {
-      "matches": ["*://*/*"],
-      "js": ["js/content-script.js"],
+      "matches": ["https://www.flaticon.com/*"],
+      "js": ["js/content/flaticon.js"],
       "run_at": "document_start"
     }
   ],

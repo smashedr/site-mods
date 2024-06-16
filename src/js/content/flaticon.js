@@ -1,7 +1,7 @@
 // JS Content Script
 
 ;(async () => {
-    console.info('site-mods: content-script.js')
+    console.info('site-tools: flaticon.js')
     const observer = new MutationObserver(mutationObserver)
     observer.observe(document, {
         attributes: true,
