@@ -9,6 +9,8 @@ chrome.commands.onCommand.addListener(onCommand)
 chrome.runtime.onMessage.addListener(onMessage)
 chrome.storage.onChanged.addListener(onChanged)
 
+chrome.downloads.onChanged.addListener(downloadsChanged)
+
 /**
  * On Startup Callback
  * @function onStartup
@@ -250,4 +252,10 @@ async function registerContentScripts() {
             }
         }
     }
+}
+
+async function downloadsChanged(delta) {
+    console.log('downloadsChanged:', delta)
+    const item = await chrome.downloads.search({ id: delta.id })
+    console.log('item:', item)
 }

@@ -96,6 +96,10 @@ function mutationObserver(mutationList) {
                 link.addEventListener('click', downloadItem)
                 console.debug('link:', link)
             }
+            if (el.id === 'layer_coupon') {
+                console.log('layer_coupon:', el)
+                el.remove()
+            }
         })
     }
 }
@@ -110,7 +114,8 @@ async function downloadItem(event) {
         const message = { download: link.dataset.png, name: `${name}.png` }
         console.log('message:', message)
         try {
-            await chrome.runtime.sendMessage(message)
+            const result = await chrome.runtime.sendMessage(message)
+            console.log('result:', result)
         } catch (e) {
             console.log(e)
         }
