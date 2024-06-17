@@ -1,5 +1,14 @@
 // JS Exports
 
+export const contentScripts = {
+    flaticon: {
+        id: 'flaticon',
+        js: ['js/content/flaticon.js'],
+        matches: ['https://www.flaticon.com/*'],
+        runAt: 'document_start',
+    },
+}
+
 /**
  * Save Options Callback
  * @function saveOptions
@@ -19,6 +28,14 @@ export async function saveOptions(event) {
                 break
             }
         }
+    } else if (key.startsWith('content-')) {
+        key = event.target.id.split('-')[1]
+        value = event.target.checked
+        // console.log(`NESTED key: ${key} - value:`, value)
+        options.contentScripts[key] = value
+        console.info(`Set: contentScripts: ${key}:`, value)
+        await chrome.storage.sync.set({ options })
+        return
     } else if (event.target.type === 'checkbox') {
         value = event.target.checked
     } else if (event.target.type === 'number') {
@@ -45,6 +62,16 @@ export function updateOptions(options) {
     for (let [key, value] of Object.entries(options)) {
         if (typeof value === 'undefined') {
             console.warn('Value undefined for key:', key)
+            continue
+        }
+        if (typeof value === 'object') {
+            for (const [subKey, subValue] of Object.entries(value)) {
+                console.log(`subKey: ${subKey} - subValue:`, subValue)
+                const el = document.getElementById(`content-${subKey}`)
+                if (el) {
+                    el.checked = subValue
+                }
+            }
             continue
         }
         if (key.startsWith('radio')) {

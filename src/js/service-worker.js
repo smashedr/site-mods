@@ -1,6 +1,6 @@
 // JS Background Service Worker
 
-import { activateOrOpen, checkPerms } from './export.js'
+import { activateOrOpen, checkPerms, contentScripts } from './export.js'
 
 chrome.runtime.onStartup.addListener(onStartup)
 chrome.runtime.onInstalled.addListener(onInstalled)
@@ -38,7 +38,9 @@ async function onInstalled(details) {
         setDefaultOptions({
             contextMenu: true,
             showUpdate: false,
-            testInput: 'Default Value',
+            contentScripts: {
+                flaticon: true,
+            },
         })
     )
     console.debug('options:', options)
@@ -66,6 +68,7 @@ async function onInstalled(details) {
     // console.log('uninstallURL:', uninstallURL.href)
     // await chrome.runtime.setUninstallURL(uninstallURL.href)
     await chrome.runtime.setUninstallURL(`${githubURL}/issues`)
+    await registerContentScripts()
 }
 
 /**
@@ -136,7 +139,7 @@ function onMessage(message, sender) {
  * @param {Object} changes
  * @param {String} namespace
  */
-function onChanged(changes, namespace) {
+async function onChanged(changes, namespace) {
     // console.debug('onChanged:', changes, namespace)
     for (const [key, { oldValue, newValue }] of Object.entries(changes)) {
         if (namespace === 'sync' && key === 'options' && oldValue && newValue) {
@@ -147,6 +150,33 @@ function onChanged(changes, namespace) {
                 } else {
                     console.info('Disabled contextMenu...')
                     chrome.contextMenus.removeAll()
+                }
+            }
+            for (const [subKey, subValue] of Object.entries(
+                newValue.contentScripts
+            )) {
+                console.log(`subKey: ${subKey} - subValue:'`, subValue)
+                if (
+                    oldValue.contentScripts[subKey] !==
+                    newValue.contentScripts[subKey]
+                ) {
+                    console.log(`UPDATE CONTENT SCRIPT: ${subKey}`)
+                    try {
+                        if (subValue) {
+                            const script = contentScripts[subKey]
+                            console.log('registerContentScripts:', script)
+                            await chrome.scripting.registerContentScripts([
+                                script,
+                            ])
+                        } else {
+                            console.log('unregisterContentScripts:', subKey)
+                            await chrome.scripting.unregisterContentScripts({
+                                ids: [subKey],
+                            })
+                        }
+                    } catch (e) {
+                        console.log(e)
+                    }
                 }
             }
         }
@@ -200,4 +230,24 @@ async function setDefaultOptions(defaultOptions) {
         console.log('changed:', options)
     }
     return options
+}
+
+/**
+ * Register Content Scripts
+ * @function registerDarkMode
+ */
+async function registerContentScripts() {
+    console.log('registerContentScripts')
+    const { options } = await chrome.storage.sync.get(['options'])
+    for (const [key, script] of Object.entries(contentScripts)) {
+        // console.log('options.contentScripts[key]:', options.contentScripts[key])
+        if (options.contentScripts[key]) {
+            console.log('Registering Enabled Script:', script)
+            try {
+                await chrome.scripting.registerContentScripts([script])
+            } catch (e) {
+                console.warn('registerContentScripts', e)
+            }
+        }
+    }
 }
