@@ -36,15 +36,14 @@ async function onInstalled(details) {
     console.log('onInstalled:', details)
     const githubURL = 'https://github.com/smashedr/site-tools'
     // const uninstallURL = new URL('https://link-extractor.cssnr.com/uninstall/')
-    const options = await Promise.resolve(
-        setDefaultOptions({
-            contextMenu: true,
-            showUpdate: false,
-            contentScripts: {
-                flaticon: true,
-            },
-        })
-    )
+    const options = await setDefaultOptions({
+        contextMenu: true,
+        showUpdate: false,
+        contentScripts: {
+            flaticon: true,
+        },
+    })
+
     console.debug('options:', options)
     if (options.contextMenu) {
         createContextMenus()
@@ -212,7 +211,7 @@ function createContextMenus() {
  * Set Default Options
  * @function setDefaultOptions
  * @param {Object} defaultOptions
- * @return {Object}
+ * @return {Promise<*|Object>}
  */
 async function setDefaultOptions(defaultOptions) {
     console.log('setDefaultOptions', defaultOptions)
