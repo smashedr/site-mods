@@ -22,20 +22,37 @@ function mutationObserver(mutationList) {
             ) {
                 console.log('icon-detail:', el)
                 const parent = el.querySelector('.icon-detail .text-left')
-                const name = el.querySelector(
-                    '.icon-details-preview-rendering i'
-                ).className
-                addCopyBtn(name, parent)
+                const icon = el.querySelector('.icon-action-glyph-copy i')
+                console.log('icon:', icon)
+                addCopyBtn(icon.className, parent)
+                el.querySelector('#icon_style')?.addEventListener(
+                    'click',
+                    updateText
+                )
             }
         })
     }
 }
 
+function updateText() {
+    const el = document.querySelector('.icon-detail')
+    const icon = el.querySelector('.icon-action-glyph-copy i')
+    console.log('icon:', icon)
+    const text = icon.className.split(' fa-lg ')[0]
+    console.log('text:', text)
+    const link = document.getElementById('copy-class-link')
+    console.log('link:', link)
+    link.dataset.name = text
+}
+
 function addCopyBtn(name, parent) {
     console.log(`addCopyBtn: ${name}`, parent)
+    const text = name.split(' fa-lg ')[0]
+    console.log('name:', text)
     const link = document.createElement('a')
+    link.id = 'copy-class-link'
     link.textContent = 'Copy Class'
-    link.dataset.name = name
+    link.dataset.name = text
     link.href = '#0'
     link.addEventListener('click', copyClick)
     parent.appendChild(link)
