@@ -7,6 +7,12 @@ export const contentScripts = {
         matches: ['https://www.flaticon.com/*'],
         runAt: 'document_start',
     },
+    fontawesome: {
+        id: 'fontawesome',
+        js: ['js/content/fontawesome.js'],
+        matches: ['https://fontawesome.com/*'],
+        runAt: 'document_idle',
+    },
 }
 
 /**
