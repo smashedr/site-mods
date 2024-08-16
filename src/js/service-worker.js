@@ -41,6 +41,7 @@ async function onInstalled(details) {
         showUpdate: false,
         contentScripts: {
             flaticon: true,
+            fontawesome: true,
         },
     })
 
@@ -209,6 +210,7 @@ function createContextMenus() {
 
 /**
  * Set Default Options
+ * TODO: Cleanup Setting Nested Values
  * @function setDefaultOptions
  * @param {Object} defaultOptions
  * @return {Promise<*|Object>}
@@ -218,8 +220,21 @@ async function setDefaultOptions(defaultOptions) {
     let { options } = await chrome.storage.sync.get(['options'])
     options = options || {}
     let changed = false
-    for (const [key, value] of Object.entries(defaultOptions)) {
-        // console.log(`${key}: default: ${value} current: ${options[key]}`)
+    for (let [key, value] of Object.entries(defaultOptions)) {
+        console.log(`${key}: default: ${value} current: ${options[key]}`)
+        if (typeof value === 'object') {
+            if (options[key] === undefined) {
+                options[key] = {}
+            }
+            for (const [k, v] of Object.entries(value)) {
+                console.log(`Nested: ${k}: ${v}`)
+                if (options[key][k] === undefined) {
+                    changed = true
+                    options[key][k] = v
+                    console.log(`Set ${key} - ${k}:`, v)
+                }
+            }
+        }
         if (options[key] === undefined) {
             changed = true
             options[key] = value

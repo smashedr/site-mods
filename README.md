@@ -35,6 +35,7 @@ All **Chromium** Based Browsers can install the extension from the
 # Features
 
 - Flaticon - https://www.flaticon.com/
+- Fontawesome - https://fontawesome.com/
 
 Please submit a [Feature Request](https://github.com/smashedr/site-tools/discussions/categories/feature-requests) for
 new features.  
